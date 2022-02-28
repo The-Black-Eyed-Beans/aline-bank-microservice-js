@@ -18,19 +18,18 @@ pipeline {
         
         stage('Build') {
             steps {
-                sh "git submodule init && git submodule update"
-                sh "mvn install"
+                sh "git submodule init"
+                sh "git submodule update"
+                sh "mvn install -Dmaven.test.skip=true"
             }
         }
-        stage('Dockerize') {
+        stage('Test') {
             steps {
-                script{
-                    image = '''docker.build bank-microservice-js'''
-                }
+                echo 'Testing happens here.'
             }
         }
+        
         stage('Push') {
-            
             steps {
                 script {
                     docker.withRegistry("https://086620157175.dkr.ecr.us-west-1.amazonaws.com", "ecr:us-west-1:jenkins.aws.credentials.js") {
@@ -39,7 +38,13 @@ pipeline {
                     } 
                 }  
             }
-            
+        }
+        stage('Cleanup') {
+            steps {
+                sh "docker image rm bank-microservice-js:latest"
+                sh "docker image rm 086620157175.dkr.ecr.us-west-1.amazonaws.com/bank-microservice-js"
+                sh "docker image ls"
+            }
         }
     }
 }

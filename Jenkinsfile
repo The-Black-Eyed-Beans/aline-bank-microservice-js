@@ -4,6 +4,11 @@ pipeline {
     tools { 
         maven 'Maven 3.8.4' 
     }
+    
+    environment {
+        AWS_ID = credentials("aws.id")
+        DEPLOYMENT_REGION = "us-west-1"
+    }
 
     stages {
         stage ('Initialize') {
@@ -12,8 +17,8 @@ pipeline {
                 sh '''
                     echo "PATH = ${PATH}"
                     echo "M2_HOME = ${M2_HOME}"
+                    echo "ID = ${AWS_ID}"
                 ''' 
-                sh '''echo "Hello ''' + '''world"'''
             }
         }
         

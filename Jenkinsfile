@@ -39,7 +39,7 @@ pipeline {
         stage('Push') {
             steps {
                 script {
-                    docker.withRegistry("https://${AWS_ID}.dkr.ecr.${DEPLOYMENT_REGION}.amazonaws.com", "ecr:${DEPLOYMENT_REGION}:jenkins.aws.credentials.js") {
+                    docker.withRegistry('https://$AWS_ID.dkr.ecr.$DEPLOYMENT_REGION.amazonaws.com', "ecr:${DEPLOYMENT_REGION}:jenkins.aws.credentials.js") {
                         def image = docker.build("${MICROSERVICE_NAME}")
                         image.push('latest')
                     } 
@@ -49,7 +49,7 @@ pipeline {
         stage('Cleanup') {
             steps {
                 sh "docker image rm ${MICROSERVICE_NAME}:latest"
-                sh "docker image rm ${AWS_ID}.dkr.ecr.${DEPLOYMENT_REGION}.amazonaws.com/${MICROSERVICE_NAME}"
+                sh 'docker image rm $AWS_ID.dkr.ecr.$DEPLOYMENT_REGION.amazonaws.com/$MICROSERVICE_NAME'
                 sh "docker image ls"
             }
         }

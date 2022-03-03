@@ -7,7 +7,7 @@ pipeline {
     
     environment {
         AWS_ID = credentials("aws.id")
-        DEPLOYMENT_REGION = "us-west-1"
+        DEPLOYMENT_REGION = credentials("deployment.region")
         MICROSERVICE_NAME = "bank-microservice-js"
     }
 

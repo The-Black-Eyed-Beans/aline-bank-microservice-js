@@ -30,9 +30,20 @@ pipeline {
                 sh "mvn install -Dmaven.test.skip=true"
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing happens here.'
+        stage('Sonar Scan'){
+            steps{
+                withSonarQubeEnv('SonarQube-Server'){
+                    sh 'mvn verify sonar:sonar'
+                }
+            }
+        }
+        
+        stage('Quality Gate'){
+            timeout(time: 1, unit: 'HOURS') {
+                def quality_gate = waitForQualityGate()
+                if(quality_gate.status != 'OK'){
+                  error "Pipeline aborted due to quality gate failure (" + qg.status + ")"   
+                }
             }
         }
         

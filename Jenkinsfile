@@ -49,7 +49,7 @@ pipeline {
 
         stage('Deploy'){
             steps {    
-                sh "aws ecs update-service --cluster ecs-cluster-js --service underwriter-service --force-new-deployment"            
+                sh "docker compose up -d"            
             }
         }
 
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 sh "docker image rm ${MICROSERVICE_NAME}:latest"
                 sh 'docker image rm $AWS_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$MICROSERVICE_NAME'
-                sh "docker image ls"
+                sh "docker image prune -f"
             }
         }
     }

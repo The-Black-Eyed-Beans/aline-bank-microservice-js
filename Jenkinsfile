@@ -62,6 +62,7 @@ pipeline {
             steps {    
                 sh "docker context use js-ecs" 
                 sh "docker compose up"
+                sh "echo 'running docker compose'"
             }
         }
 

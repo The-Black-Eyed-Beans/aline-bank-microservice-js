@@ -20,6 +20,7 @@ pipeline {
                     echo "PATH = ${PATH}"
                     echo "M2_HOME = ${M2_HOME}"
                 ''' 
+                sh "docker context use default" 
             }
         }
         
@@ -59,12 +60,14 @@ pipeline {
 
         stage('Deploy'){
             steps {    
+                sh "docker context use ecs-context-js" 
                 sh "docker compose up -d"            
             }
         }
 
         stage('Cleanup') {
             steps {
+                sh "docker context use default" 
                 sh "docker image rm ${MICROSERVICE_NAME}:latest"
                 sh 'docker image rm $AWS_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$MICROSERVICE_NAME'
                 sh "docker image prune -f"

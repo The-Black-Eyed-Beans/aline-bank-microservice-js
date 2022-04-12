@@ -61,7 +61,7 @@ pipeline {
         stage('Deploy'){
             steps {    
                 sh "docker context use js-ecs" 
-                sh "docker compose up -d"            
+                sh "docker compose up"
             }
         }
 

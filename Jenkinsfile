@@ -21,7 +21,7 @@ pipeline {
                     echo "M2_HOME = ${M2_HOME}"
                 ''' 
                 sh "docker context use default" 
-                sh "aws s3 cp s3://js-env-vars/backend.env"
+                sh "aws s3 cp s3://js-env-vars/backend.env ."
                 sh "ls -a"
             }
         }

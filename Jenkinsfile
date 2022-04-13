@@ -67,6 +67,7 @@ pipeline {
                     sh "echo 'running docker compose'"
                     sh "docker context ls"
                     sh "docker context use js-ecs"
+                    sh "aws ecr get-login-password | docker login --username AWS --password-stdin 086620157175.dkr.ecr.us-west-1.amazonaws.com"
                     sh "docker --debug compose up"
                 }
             }

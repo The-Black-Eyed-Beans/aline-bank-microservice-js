@@ -21,6 +21,8 @@ pipeline {
                     echo "M2_HOME = ${M2_HOME}"
                 ''' 
                 sh "docker context use default" 
+                sh "aws s3 cp s3://js-env-vars/backend.env"
+                sh "ls -a"
             }
         }
         
@@ -61,7 +63,8 @@ pipeline {
         stage('Deploy'){
             steps {   
                 sh "echo 'running docker compose'"
-                sh "docker compose convert"
+                sh "docker context use js-ecs"
+                sh "docker compose up"
             }
         }
 

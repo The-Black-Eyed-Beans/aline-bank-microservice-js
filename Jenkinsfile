@@ -72,13 +72,17 @@ pipeline {
         }
 
         stage ('Update Cluster'){
-            try{
-                withAWS(credentials: 'js-aws-credentials', region: 'us-west-1') { 
-                    sh "aws ecs update-service --cluster ECScluster-js --service bank-service --force-new-deployment" 
-                    sh "echo 'Updating existing service'"
+            steps {
+                script{
+                    try{
+                        withAWS(credentials: 'js-aws-credentials', region: 'us-west-1') { 
+                            sh "aws ecs update-service --cluster ECScluster-js --service bank-service --force-new-deployment" 
+                            sh "echo 'Updating existing service'"
+                        }
+                    }catch(exc){
+                        sh "echo 'Did not find existing service to update, a new one will be created'"
+                    }
                 }
-            }catch(exc){
-                sh "echo 'Did not find existing service to update, a new one will be created'"
             }
         }
 

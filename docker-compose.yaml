@@ -10,3 +10,9 @@ services:
       - ./backend.env
     environment:
       - APP_PORT=8083
+
+x-aws-cloudformation:
+  Resources:
+    BankService:
+      Properties:
+        ServiceName: bank-service

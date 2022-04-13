@@ -9,6 +9,7 @@ pipeline {
         AWS_ID = credentials("aws.id")
         AWS_DEFAULT_REGION = credentials("deployment.region")
         MICROSERVICE_NAME = "bank-microservice-js"
+        ECS_SERVICE_NAME = "bank-service-js"
     }
 
     stages {
@@ -76,7 +77,7 @@ pipeline {
                 script{
                     try{
                         withAWS(credentials: 'js-aws-credentials', region: 'us-west-1') { 
-                            sh "aws ecs update-service --cluster ECScluster-js --service bank-service --force-new-deployment" 
+                            sh "aws ecs update-service --cluster ECScluster-js --service ${ECS_SERVICE_NAME} --force-new-deployment" 
                             sh "echo 'Updating existing service'"
                         }
                     }catch(exc){

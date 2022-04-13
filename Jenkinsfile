@@ -60,7 +60,6 @@ pipeline {
 
         stage('Deploy'){
             steps {   
-                sh "docker context use js-ecs" 
                 sh "echo 'running docker compose'"
                 sh "docker compose convert"
             }

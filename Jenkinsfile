@@ -14,8 +14,6 @@ pipeline {
     stages {
         stage ('Initialize') {
             steps {
-                sh 'python3 -m venv venv && venv/bin/pip install aws-sam-cli'
-                stash includes: '**/venv/**/*', name: 'venv'
 
                 // Verify path variables for mvn
                 sh '''
@@ -31,10 +29,6 @@ pipeline {
         
         stage('Build') {
             steps {
-                unstash 'venv'
-                sh 'venv/bin/sam build'
-                stash includes: '**/.aws-sam/**/*', name: 'aws-sam'
-
                 sh "git submodule init"
                 sh "git submodule update"
                 sh "mvn install -Dmaven.test.skip=true"

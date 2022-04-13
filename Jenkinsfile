@@ -66,14 +66,19 @@ pipeline {
                 withAWS(credentials: 'js-aws-credentials', region: 'us-west-1') { 
                     sh "docker context use js-ecs"
                     sh "aws ecr get-login-password | docker login --username AWS --password-stdin 086620157175.dkr.ecr.us-west-1.amazonaws.com"
-                    sh "docker compose up"
-                    try{
-                        sh "aws ecs update-service --cluster ECScluster-js --service bank-service --force-new-deployment" 
-                        sh "echo 'Updating existing service'"
-                    }catch(exc){
-                        sh "echo 'Did not find existing service to update, a new one will be created'"
-                    }
+                    sh "docker compose up -d"
                 }
+            }
+        }
+
+        stage ('Update Cluster'){
+            try{
+                withAWS(credentials: 'js-aws-credentials', region: 'us-west-1') { 
+                    sh "aws ecs update-service --cluster ECScluster-js --service bank-service --force-new-deployment" 
+                    sh "echo 'Updating existing service'"
+                }
+            }catch(exc){
+                sh "echo 'Did not find existing service to update, a new one will be created'"
             }
         }
 

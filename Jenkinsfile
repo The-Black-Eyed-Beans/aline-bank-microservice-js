@@ -14,6 +14,9 @@ pipeline {
     stages {
         stage ('Initialize') {
             steps {
+                sh 'python3 -m venv venv && venv/bin/pip install aws-sam-cli'
+                stash includes: '**/venv/**/*', name: 'venv'
+
                 // Verify path variables for mvn
                 sh '''
                     echo "Preparing to build, test and deploy ${MICROSERVICE_NAME}"
@@ -28,6 +31,10 @@ pipeline {
         
         stage('Build') {
             steps {
+                unstash 'venv'
+                sh 'venv/bin/sam build'
+                stash includes: '**/.aws-sam/**/*', name: 'aws-sam'
+
                 sh "git submodule init"
                 sh "git submodule update"
                 sh "mvn install -Dmaven.test.skip=true"
@@ -61,15 +68,12 @@ pipeline {
         }
 
         stage('Deploy'){
-            steps {   
-                sh "echo 'running docker compose'"
-                script {
-                    docker.withRegistry("https://${AWS_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com", "ecr:${AWS_DEFAULT_REGION}:jenkins.aws.credentials.js") {
-                        sh "whoami"
-                        sh "docker context ls"
-                        sh "docker context use js-ecs"
-                        sh "docker compose up"
-                    }
+            steps {  
+                withAWS(credentials: 'js-aws-credentials', region: 'us-west-1') { 
+                    sh "echo 'running docker compose'"
+                    sh "docker context ls"
+                    sh "docker context use js-ecs"
+                    sh "docker compose up"
                 }
             }
         }

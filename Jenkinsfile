@@ -64,7 +64,11 @@ pipeline {
             steps {   
                 sh "echo 'running docker compose'"
                 sh "docker context use js-ecs"
-                sh "docker compose up"
+                script {
+                    docker.withRegistry("https://${AWS_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com", "ecr:${AWS_DEFAULT_REGION}:jenkins.aws.credentials.js") {
+                        sh "docker compose up"
+                    }
+                }
             }
         }
 

@@ -27,12 +27,22 @@ pipeline {
             steps {
                 sh "git submodule init"
                 sh "git submodule update"
-                sh "mvn install -Dmaven.test.skip=true"
+                sh "mvn clean package -Dmaven.test.skip=true"
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing happens here.'
+        stage('Sonar Scan'){
+            steps{
+                withSonarQubeEnv('SonarQube-Server'){
+                    sh 'mvn verify sonar:sonar'
+                }
+            }
+        }
+        
+        stage('Quality Gate'){
+            steps{
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
         
@@ -51,6 +61,7 @@ pipeline {
                 sh "docker image rm ${MICROSERVICE_NAME}:latest"
                 sh 'docker image rm $AWS_ID.dkr.ecr.$DEPLOYMENT_REGION.amazonaws.com/$MICROSERVICE_NAME'
                 sh "docker image ls"
+                sh "mvn clean"
             }
         }
     }

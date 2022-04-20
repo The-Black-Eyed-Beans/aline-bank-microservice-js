@@ -1,0 +1,18 @@
+x-aws-cluster: "ECScluster-js"
+
+version: "3.9"
+services:
+  bank:
+    image: 086620157175.dkr.ecr.us-west-1.amazonaws.com/bank-microservice-js
+    ports:
+      - "8083:8083"
+    env_file:
+      - ./backend.env
+    environment:
+      - APP_PORT=8083
+
+x-aws-cloudformation:
+  Resources:
+    BankService:
+      Properties:
+        ServiceName: bank-service-js

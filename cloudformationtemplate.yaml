@@ -1,0 +1,26 @@
+services:
+  bank:
+    environment:
+      APP_PORT: "8083"
+      DB_HOST: aline-database-instance-1.cpghzbngoldo.us-east-1.rds.amazonaws.com
+      DB_NAME: alinedb-js
+      DB_PASSWORD: pramodchandrakarthickakbar1!
+      DB_PORT: "3306"
+      DB_USERNAME: admin
+      ENCRYPT_SECRET_KEY: NVNCWq4KEDHXNjsazdGX20Z1NVNCWq4KEDHXNjsazdGX20Z1
+      JWT_SECRET_KEY: 1wHqQFdUlUr5TZNr1wTCiuyM0Vye2L4jX1wHqQFdUlUr5TZNr1wTCiuyM0Vye2L4jX
+    env_file:
+    - ./backend.env
+    image: 086620157175.dkr.ecr.us-west-1.amazonaws.com/bank-microservice-js
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 8083
+      published: 8083
+      protocol: tcp
+networks:
+  default:
+    name: aline-bank-microservice_default
+x-aws-cluster: ECScluster-js
+x-aws-vps: AlineVPC-js

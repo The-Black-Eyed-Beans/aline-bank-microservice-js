@@ -32,7 +32,7 @@ pipeline {
             steps {
                 sh "git submodule init"
                 sh "git submodule update"
-                sh "mvn install -Dmaven.test.skip=true"
+                sh "mvn clean package -Dmaven.test.skip=true"
             }
         }
         stage('Sonar Scan'){
